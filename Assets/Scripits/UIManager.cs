@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
     public GameObject startMenuUI;
     public GameObject loseUI;
     public GameObject winUI;
+    public TMP_Text timer;
     private void Awake()
     {
         instance = this;
@@ -47,6 +48,10 @@ public class UIManager : MonoBehaviour
         }
         blackWindow.SetActive(true);
 
+    }
+    public void ShowTime(string newTime)
+    {
+        timer.text = newTime;
     }
     public void EndGame(bool isWin=false)
     {

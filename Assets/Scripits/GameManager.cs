@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     private float sec;
         private void Awake()
     {
+        Application.targetFrameRate = 60;
         instance = this;
         currentTimeScale = Time.timeScale;
         if (PlayerPrefs.HasKey("Money"))
@@ -35,18 +36,20 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        if (sec>=1)
-        {
-            sec = 0;
-            gameTime--;
 
-        }
-        else
-        {
-            sec += Time.deltaTime;
-        }
         if (isGameStarted)
         {
+            UIManager.instance.ShowTime(gameTime.ToString());
+            if (sec >= 1)
+            {
+                sec = 0;
+                gameTime--;
+
+            }
+            else
+            {
+                sec += Time.deltaTime;
+            }
             //score += 1;
             UIManager.instance.ShowScore(score.ToString());
         }
@@ -61,6 +64,7 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame()
     {
+        gameTime = 60;
         isGameStarted = true;
         onGameStarted?.Invoke();
         Time.timeScale = 1f;
@@ -80,9 +84,16 @@ public class GameManager : MonoBehaviour
     }
     public void EndGame()
     {
-        isGameStarted = false;
-        CheckBestScore();
-        UIManager.instance.EndGame();
+        if (isGameStarted)
+        {
+            isGameStarted = false;
+            money = score;
+            PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") + score);
+            Debug.Log(PlayerPrefs.GetInt("Money"));
+            PlayerPrefs.Save();
+            CheckBestScore();
+            UIManager.instance.EndGame();
+        }
     }
     private void CheckBestScore()
     {
